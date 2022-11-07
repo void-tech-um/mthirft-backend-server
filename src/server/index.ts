@@ -1,8 +1,6 @@
 import express from "express";
-import router from "./api";
 import dotenv from "dotenv";
 import cors from "cors";
-import path from "path";
 
 // Load environment variables
 dotenv.config();
@@ -22,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // Tell our app to use the router we created
-app.use("/api", router);
+// app.use("/api", router);
 
 // Start the server
 app.listen(PORT, () => {
