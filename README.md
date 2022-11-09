@@ -1,5 +1,4 @@
 # BluThrift Backend
-=================
 This project is the backend implementation for BluThrift, an
 app being developed by students at the University of Michigan as a part of
 the student led organization VOID Tech. 
