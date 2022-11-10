@@ -11,16 +11,16 @@ export const getItems = async (): Promise<Item[]> => {
 
 /**
  * @desc Update an item
- * @param {number} id
+ * @param {number} itemId
  * @param {Item} item
  * @returns {Promise<[affectedCount: number]>} Updated item
  */
 export const updateItem = async (
-  id: number,
+  itemId: number,
   item: Item
 ): Promise<[affectedCount: number]> => {
   const updatedItem = await Item.update(item, {
-    where: { id },
+    where: { itemId },
   });
   return updatedItem;
 };
@@ -37,12 +37,12 @@ export const createItem = async (item: Item): Promise<Item> => {
 
 /**
  * @desc Delete an item
- * @param {number} id
+ * @param {number} itemId
  * @returns {Promise<number>} Deleted item
  */
-export const deleteItem = async (id: number): Promise<number> => {
+export const deleteItem = async (itemId: number): Promise<number> => {
   const deletedItem = await Item.destroy({
-    where: { id },
+    where: { itemId },
   });
   return deletedItem;
 };
