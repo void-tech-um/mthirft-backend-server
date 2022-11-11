@@ -26,7 +26,7 @@ export const createUser = async (user: User): Promise<User | boolean> => {
  * @param {User} user object
  * @returns {Promise<User | null>} Username or null if user does not exist or password is incorrect
  */
-export const loginUser = async (user: User): Promise<User | null> => {
+export const userExists = async (user: User): Promise<User | null> => {
   // Check if user exists
   const userExists = await User.findOne({
     where: {
