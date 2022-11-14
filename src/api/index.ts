@@ -3,7 +3,6 @@ import authRouter from "./routes/auth.routes";
 import itemsRouter from "./routes/items.routes";
 import userRouter from "./routes/user.routes";
 
-
 const router = express.Router();
 /** @route GET /api */
 router.get("/", (req, res) => {
@@ -17,6 +16,5 @@ router.get("/", (req, res) => {
 router.use("/items", itemsRouter);
 router.use("/auth", authRouter);
 router.use("/user", userRouter);
-
 
 export default router;
