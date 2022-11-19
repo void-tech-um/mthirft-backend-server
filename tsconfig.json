@@ -3,7 +3,7 @@
     "target": "ESNEXT",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "src",
+    "rootDirs": ["./src", "./tests"],
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
