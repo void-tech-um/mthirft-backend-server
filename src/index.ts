@@ -2,15 +2,19 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import router from "./api";
+import db from "./models";
 
 // Load environment variables
 dotenv.config();
 
 // Set our port
-const PORT = process.env.SERVER_PORT;
+const PORT = process.env.PORT;
 
 // Create Express server
 const app = express();
+
+// Sync database
+db.sequelize.sync({ force: true });
 
 // Enable CORS: Cross Origin Resource Sharing
 // This essentially allows us to make requests from our frontend to our backend

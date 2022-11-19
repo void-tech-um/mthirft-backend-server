@@ -1,18 +1,17 @@
 import { Item } from "./models";
 
 /**
- * @desc Check if user exists and return user
- * @param {Item} item object
- * @returns {Promise<Item | null>} Username or null if user does not exist or password is incorrect
+ * @desc Check if item exists and return item
+ * @param {number} itemId
+ * @returns {Promise<Item | null>} Item, if exists, else throw error
  */
- export const itemExists = async (item: Item): Promise<Item | null> => {
-  // Check if user exists
-  const itemExists = await Item.findOne({
+export const getItem = async (itemId: number): Promise<Item | null> => {
+  const item = await Item.findOne({
     where: {
-      itemId: item.itemId,
+      itemId,
     },
   });
-  return itemExists;
+  return item;
 };
 
 /**
@@ -26,43 +25,45 @@ export const getItems = async (): Promise<Item[]> => {
 
 /**
  * @desc Update an item
- * @param {number} itemId
- * @param {Item} item
+ * @param {any} item
  * @returns {Promise<[affectedCount: number]>} Updated item
  */
-export const updateItem = async (itemId: number,item: Item): Promise<[affectedCount: number]> => {
-  if(!itemExists(item)){
+export const updateItem = async (
+  item: any
+): Promise<[affectedCount: number]> => {
+  const updatedItem = await Item.update(item, {
+    where: { itemId: item.itemId },
+  });
+  if (updatedItem[0] === 0) {
     throw new Error("Item does not exist");
   }
-  const updatedItem = await Item.update(item, {
-    where: { itemId },
-  });
   return updatedItem;
 };
 
 /**
  * @desc Create a new item
- * @param {Item} item
+ * @param {any} item
  * @returns {Promise<Item>} Created item
  */
-export const createItem = async (item: Item): Promise<Item> => {
+export const createItem = async (item: any): Promise<Item> => {
   const newItem = await Item.create(item);
   return newItem;
 };
 
 /**
  * @desc Delete an item
- * @param {Item} item
+ * @param {number} itemId
  * @returns {Promise<number>} Deleted item
  */
-export const deleteItem = async (item: Item): Promise<number> => {
-  if (!itemExists(item)) {
-    throw new Error("Item ID does not exist");
-  }
+export const deleteItem = async (itemId: number): Promise<number> => {
+  await getItem(itemId);
   const deletedItem = await Item.destroy({
-    where: { 
-      itemId: item.itemId
+    where: {
+      itemId,
     },
   });
+  if (deletedItem === 0) {
+    throw new Error("Item does not exist");
+  }
   return deletedItem;
 };

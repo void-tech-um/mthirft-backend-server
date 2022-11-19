@@ -6,7 +6,7 @@ import { Item } from "./models";
  * @param {User} user object
  * @returns {Promise<User | null>} Username or null if user does not exist or password is incorrect
  */
- export const userExists = async (user: User): Promise<User | null> => {
+export const userExists = async (user: User): Promise<User | null> => {
   // Check if user exists
   const userExists = await User.findOne({
     where: {
@@ -45,7 +45,7 @@ export const getItems = async (user: User): Promise<Item[]> => {
   // Get items
   const items = await Item.findAll({
     where: {
-      userId: user.username,
+      username: user.username,
     },
   });
   return items;
@@ -57,7 +57,7 @@ export const getItems = async (user: User): Promise<Item[]> => {
  * @returns {Promise<Item>} Created item
  * @throws {Error} If user does not exist
  */
-export const createItem = async (user:User, item: Item): Promise<Item> => {
+export const createItem = async (user: User, item: Item): Promise<Item> => {
   // Check if user exists
   if (!userExists(user)) {
     throw new Error("User does not exist");
@@ -65,8 +65,7 @@ export const createItem = async (user:User, item: Item): Promise<Item> => {
   // Create item
   const newItem = await Item.create({
     ...item,
-    userId: user.username,
+    username: user.username,
   });
   return newItem;
 };
-
