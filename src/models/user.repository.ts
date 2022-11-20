@@ -6,7 +6,7 @@ import { Item } from "./models";
  * @param {User} user object
  * @returns {Promise<User | null>} Username or null if user does not exist or password is incorrect
  */
-export const userExists = async (user: User): Promise<User | null> => {
+export const getUser = async (user: User): Promise<User | null> => {
   // Check if user exists
   const userExists = await User.findOne({
     where: {
@@ -22,9 +22,10 @@ export const userExists = async (user: User): Promise<User | null> => {
  * @returns {Promise<User>} Created user or error if user already exists
  * @throws {Error} If user does not exist
  */
-export const createUser = async (user: User): Promise<User> => {
+export const createUser = async (user: any): Promise<User> => {
   // Check if user already exists
-  if (userExists(user) !== null) {
+  const userExists = await getUser(user);
+  if (userExists) {
     throw new Error("User already exists");
   }
   // Create user
@@ -39,7 +40,8 @@ export const createUser = async (user: User): Promise<User> => {
  */
 export const getItems = async (user: User): Promise<Item[]> => {
   // Check if user exists
-  if (!userExists(user)) {
+  const userExists = await getUser(user);
+  if (!userExists) {
     throw new Error("User does not exist");
   }
   // Get items
@@ -59,7 +61,8 @@ export const getItems = async (user: User): Promise<Item[]> => {
  */
 export const createItem = async (user: User, item: Item): Promise<Item> => {
   // Check if user exists
-  if (!userExists(user)) {
+  const userExists = await getUser(user);
+  if (!userExists) {
     throw new Error("User does not exist");
   }
   // Create item

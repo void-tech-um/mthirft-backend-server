@@ -14,7 +14,7 @@ const PORT = process.env.PORT;
 const app = express();
 
 // Sync database
-db.sequelize.sync({ force: true });
+db.sequelize.sync();
 
 // Enable CORS: Cross Origin Resource Sharing
 // This essentially allows us to make requests from our frontend to our backend

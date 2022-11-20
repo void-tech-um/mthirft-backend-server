@@ -40,10 +40,11 @@ User.init(
     username: {
       type: DataTypes.STRING,
       primaryKey: true,
+      unique: true,
     },
     fullName: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
@@ -60,7 +61,7 @@ User.init(
     },
     phoneNumber: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     userPhoto: {
       type: DataTypes.STRING,
@@ -83,8 +84,8 @@ User.init(
 );
 
 export class Item extends Model<
-  InferAttributes<Item>,
-  InferCreationAttributes<Item>
+  InferAttributes<Item, { omit: "owner" }>,
+  InferCreationAttributes<Item, { omit: "owner" }>
 > {
   declare itemId: CreationOptional<number>;
   declare name: string;
@@ -169,8 +170,8 @@ Message.init(
   },
   {
     sequelize,
-    modelName: "User",
-    tableName: "users",
+    modelName: "Message",
+    tableName: "messages",
     updatedAt: false,
   }
 );
@@ -209,7 +210,7 @@ Wishlist.init(
   {
     sequelize,
     modelName: "Wishlist",
-    tableName: "wishlists",
+    tableName: "wishlist",
   }
 );
 
@@ -277,6 +278,14 @@ Message.belongsTo(User, {
   targetKey: "username",
 });
 
-// User.belongsToMany(Item, { through: Wishlist });
+User.belongsToMany(Item, {
+  through: Wishlist,
+  sourceKey: "username",
+  foreignKey: "username",
+});
 
-// Item.belongsToMany(User, { through: Wishlist });
+Item.belongsToMany(User, {
+  through: Wishlist,
+  sourceKey: "itemId",
+  foreignKey: "itemId",
+});
