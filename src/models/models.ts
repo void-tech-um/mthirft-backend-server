@@ -10,7 +10,6 @@ import {
   ForeignKey,
 } from "sequelize";
 
-
 export class User extends Model<
   InferAttributes<User, { omit: "items" }>,
   InferCreationAttributes<User, { omit: "items" }>
@@ -26,15 +25,62 @@ export class User extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-
   declare items?: NonAttribute<Item[]>;
 
-  declare static associations: { 
-    items: Association<User, Item>,
-    senderMsgs: Association<User, Message>,
-    recipientMsgs: Association<User, Message>
+  declare static associations: {
+    items: Association<User, Item>;
+    senderMsgs: Association<User, Message>;
+    recipientMsgs: Association<User, Message>;
   };
 }
+
+/** @desc Initialize User model */
+User.init(
+  {
+    username: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    fullName: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    userBio: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    userPhoto: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "User",
+    tableName: "users",
+  }
+);
 
 export class Item extends Model<
   InferAttributes<Item>,
@@ -43,7 +89,7 @@ export class Item extends Model<
   declare itemId: CreationOptional<number>;
   declare name: string;
   declare price: number;
-  declare userId: ForeignKey<User["username"]>;
+  declare username: ForeignKey<User["username"]>;
   declare itemPhotos: string[];
   declare owner?: NonAttribute<User>;
 
@@ -54,112 +100,8 @@ export class Item extends Model<
   get getOwner(): NonAttribute<User> {
     return this.owner;
   }
-  */ 
+  */
 }
-
-export class Message extends Model<
-  InferAttributes<Message>,
-  InferCreationAttributes<Message>
-> {
-  declare messageId: CreationOptional<number>;
-  declare message: string;
-  declare senderId: ForeignKey<User["username"]>;
-  declare recipientId: ForeignKey<User["username"]>;
-  declare createdAt: CreationOptional<Date>;
-}
-
-export class Wishlist extends Model<
-  InferAttributes<Wishlist>,
-  InferCreationAttributes<Wishlist>
-> {
-  declare userId: ForeignKey<User["username"]>;
-  declare itemId: ForeignKey<Item["itemId"]>;
-}
-
-export class Chat extends Model<
-  InferAttributes<Chat>,
-  InferCreationAttributes<Chat>
-> {
-  declare senderId: ForeignKey<User["username"]>;
-  declare recipientId: ForeignKey<User["username"]>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
-}
-
-Chat.init(
-  {
-    senderId: {
-      type: DataTypes.STRING,
-      primaryKey: true
-    },
-    recipientId: {
-      type: DataTypes.STRING,
-      primaryKey: true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    }
-  },
-  {
-    sequelize,
-    modelName: "Chat",
-    tableName: "chats",
-  }
-)
-
-
-/** @desc Initialize User model */
-User.init(
-    {
-        username: {
-            type: DataTypes.STRING,
-            primaryKey: true, 
-        },
-        fullName: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        userBio: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        phoneNumber: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        userPhoto: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-        }
-    },
-    {
-        sequelize,
-        modelName: "User",
-        tableName: "users",
-    }
-);
 
 /** @desc Initialize Item model */
 Item.init(
@@ -178,8 +120,8 @@ Item.init(
       allowNull: false,
     },
     itemPhotos: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -188,7 +130,7 @@ Item.init(
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-    }
+    },
   },
   {
     sequelize,
@@ -197,22 +139,33 @@ Item.init(
   }
 );
 
+export class Message extends Model<
+  InferAttributes<Message>,
+  InferCreationAttributes<Message>
+> {
+  declare messageId: CreationOptional<number>;
+  declare message: string;
+  declare sender: ForeignKey<User["username"]>;
+  declare recipient: ForeignKey<User["username"]>;
+  declare createdAt: CreationOptional<Date>;
+}
+
 /** @desc initialize Message model */
 Message.init(
   {
     messageId: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     message: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     sequelize,
@@ -222,58 +175,108 @@ Message.init(
   }
 );
 
+export class Wishlist extends Model<
+  InferAttributes<Wishlist>,
+  InferCreationAttributes<Wishlist>
+> {
+  declare username: ForeignKey<User["username"]>;
+  declare itemId: ForeignKey<Item["itemId"]>;
+
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+}
+
 /** @desc initialize Wishlist model */
 Wishlist.init(
   {
-    userId: {
+    username: {
       type: DataTypes.STRING,
-      allowNull: false,
       primaryKey: true,
-    }, 
+    },
     itemId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
       allowNull: false,
-      primaryKey: true, 
-    }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
   {
-      sequelize,
-      modelName: "Wishlist",
-      tableName: "Wishlists",
+    sequelize,
+    modelName: "Wishlist",
+    tableName: "wishlists",
   }
 );
 
+export class Chat extends Model<
+  InferAttributes<Chat>,
+  InferCreationAttributes<Chat>
+> {
+  declare sender: ForeignKey<User["username"]>;
+  declare recipient: ForeignKey<User["username"]>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+}
+
+Chat.init(
+  {
+    sender: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    recipient: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "Chat",
+    tableName: "chats",
+  }
+);
 
 /** @desc Associations go here */
 
 User.hasMany(Item, {
-  foreignKey: "userId",
+  foreignKey: "username",
   sourceKey: "username",
   as: "items",
 });
 
-Item.belongsTo(User, {
-  targetKey: "username",
-});
+// Item.belongsTo(User, {
+//   targetKey: "username",
+// });
 
-User.hasMany(Message, { 
-  foreignKey: "senderId",
+User.hasMany(Message, {
+  foreignKey: "sender",
   sourceKey: "username",
-  as: "senderMsgs"
+  as: "senderMsgs",
 });
 
 User.hasMany(Message, {
-  foreignKey: "recipientId",
+  foreignKey: "recipient",
   sourceKey: "username",
-  as: "recipientMsgs"
+  as: "recipientMsgs",
 });
 
 Message.belongsTo(User, {
-  targetKey: "username"
+  targetKey: "username",
 });
 
-User.belongsToMany(Item, {through: "Wishlist"});
+// User.belongsToMany(Item, { through: Wishlist });
 
-Item.belongsToMany(User, {through: "Wishlist"});
-
-
+// Item.belongsToMany(User, { through: Wishlist });

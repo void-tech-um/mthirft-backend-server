@@ -1,6 +1,20 @@
 import { Item } from "./models";
 
 /**
+ * @desc Check if item exists and return item
+ * @param {number} itemId
+ * @returns {Promise<Item | null>} Item, if exists, else throw error
+ */
+export const getItem = async (itemId: number): Promise<Item | null> => {
+  const item = await Item.findOne({
+    where: {
+      itemId,
+    },
+  });
+  return item;
+};
+
+/**
  * @desc Get all items
  * @returns {Promise<Item[]>} All items
  */
@@ -11,26 +25,27 @@ export const getItems = async (): Promise<Item[]> => {
 
 /**
  * @desc Update an item
- * @param {number} itemId
- * @param {Item} item
+ * @param {any} item
  * @returns {Promise<[affectedCount: number]>} Updated item
  */
 export const updateItem = async (
-  itemId: number,
-  item: Item
+  item: any
 ): Promise<[affectedCount: number]> => {
   const updatedItem = await Item.update(item, {
-    where: { itemId },
+    where: { itemId: item.itemId },
   });
+  if (updatedItem[0] === 0) {
+    throw new Error("Item does not exist");
+  }
   return updatedItem;
 };
 
 /**
  * @desc Create a new item
- * @param {Item} item
+ * @param {any} item
  * @returns {Promise<Item>} Created item
  */
-export const createItem = async (item: Item): Promise<Item> => {
+export const createItem = async (item: any): Promise<Item> => {
   const newItem = await Item.create(item);
   return newItem;
 };
@@ -41,8 +56,14 @@ export const createItem = async (item: Item): Promise<Item> => {
  * @returns {Promise<number>} Deleted item
  */
 export const deleteItem = async (itemId: number): Promise<number> => {
+  await getItem(itemId);
   const deletedItem = await Item.destroy({
-    where: { itemId },
+    where: {
+      itemId,
+    },
   });
+  if (deletedItem === 0) {
+    throw new Error("Item does not exist");
+  }
   return deletedItem;
 };

@@ -2,26 +2,6 @@ import { User } from "./models";
 import { Item } from "./models";
 
 /**
- * @desc Create a new user
- * @param {User} user
- * @returns {Promise<User | boolean>} Created user or false if user already exists
- */
-export const createUser = async (user: User): Promise<User | boolean> => {
-  // Check if user already exists
-  const userExists = await User.findOne({
-    where: {
-      username: user.username,
-    },
-  });
-  if (userExists) {
-    return false;
-  }
-  // Create user
-  const newUser = await User.create(user);
-  return newUser;
-};
-
-/**
  * @desc Check if user exists and return user
  * @param {User} user object
  * @returns {Promise<User | null>} Username or null if user does not exist or password is incorrect
@@ -37,25 +17,35 @@ export const userExists = async (user: User): Promise<User | null> => {
 };
 
 /**
+ * @desc Create a new user
+ * @param {User} user
+ * @returns {Promise<User>} Created user or error if user already exists
+ * @throws {Error} If user does not exist
+ */
+export const createUser = async (user: User): Promise<User> => {
+  // Check if user already exists
+  if (userExists(user) !== null) {
+    throw new Error("User already exists");
+  }
+  // Create user
+  const newUser = await User.create(user);
+  return newUser;
+};
+
+/**
  * @desc Get all items owned by user
- * @param {string} username
  * @returns {Promise<Item[]>} All items owned by user
  * @throws {Error} If user does not exist
  */
-export const getItems = async (username: string): Promise<Item[]> => {
+export const getItems = async (user: User): Promise<Item[]> => {
   // Check if user exists
-  const userExists = await User.findOne({
-    where: {
-      username,
-    },
-  });
-  if (!userExists) {
+  if (!userExists(user)) {
     throw new Error("User does not exist");
   }
   // Get items
   const items = await Item.findAll({
     where: {
-      userId: userExists.username,
+      username: user.username,
     },
   });
   return items;
@@ -63,29 +53,19 @@ export const getItems = async (username: string): Promise<Item[]> => {
 
 /**
  * @desc Create a new item
- * @param {string} username
  * @param {Item} item
  * @returns {Promise<Item>} Created item
  * @throws {Error} If user does not exist
  */
-export const createItem = async (
-  username: string,
-  item: Item
-): Promise<Item | boolean> => {
+export const createItem = async (user: User, item: Item): Promise<Item> => {
   // Check if user exists
-  const userExists = await User.findOne({
-    where: {
-      username,
-    },
-  });
-  if (!userExists) {
+  if (!userExists(user)) {
     throw new Error("User does not exist");
   }
   // Create item
   const newItem = await Item.create({
     ...item,
-    userId: userExists.username,
+    username: user.username,
   });
   return newItem;
 };
-
