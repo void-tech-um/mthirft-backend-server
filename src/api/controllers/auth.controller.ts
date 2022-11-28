@@ -36,7 +36,7 @@ export const authenticateUser = async (
     //Make token and send 
     const token = generateAccessToken(user.username);
     res.send({
-        username: user.username ,
+        username: user.username,
         token: token,
         url: req.originalUrl
     })
