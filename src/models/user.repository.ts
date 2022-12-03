@@ -3,14 +3,14 @@ import { Item } from "./models";
 
 /**
  * @desc Check if user exists and return user
- * @param {User} user object
+ * @param {string} username object
  * @returns {Promise<User | null>} Username or null if user does not exist or password is incorrect
  */
-export const getUser = async (user: User): Promise<User | null> => {
+export const getUser = async (username: string): Promise<User | null> => {
   // Check if user exists
   const userExists = await User.findOne({
     where: {
-      username: user.username,
+      username,
     },
   });
   return userExists;
@@ -23,10 +23,10 @@ export const getUser = async (user: User): Promise<User | null> => {
  * @throws {Error} If user does not exist
  */
 
-//Create User 
+//Create User
 export const createUser = async (user: any): Promise<User> => {
   // Check if user already exists
-  const userExists = await getUser(user);
+  const userExists = await getUser(user.username);
   if (userExists) {
     throw new Error("User already exists");
   }
@@ -36,16 +36,18 @@ export const createUser = async (user: any): Promise<User> => {
 };
 
 //Update user (called on user thats already loggin)
-export const updateUser = async (user: any): Promise<[affectedCount: number]> => {
+export const updateUser = async (
+  user: any
+): Promise<[affectedCount: number]> => {
   // Update user
   const updatedUser = await User.update(user, {
-    //'where' finds which user 
+    //'where' finds which user
     where: {
-      username: user.username
-    }
+      username: user.username,
+    },
   });
   return updatedUser;
-}; 
+};
 
 /**
  * @desc Get all items owned by user
@@ -54,7 +56,7 @@ export const updateUser = async (user: any): Promise<[affectedCount: number]> =>
  */
 export const getItems = async (user: User): Promise<Item[]> => {
   // Check if user exists
-  const userExists = await getUser(user);
+  const userExists = await getUser(user.username);
   if (!userExists) {
     throw new Error("User does not exist");
   }
@@ -75,7 +77,7 @@ export const getItems = async (user: User): Promise<Item[]> => {
  */
 export const createItem = async (user: User, item: Item): Promise<Item> => {
   // Check if user exists
-  const userExists = await getUser(user);
+  const userExists = await getUser(user.username);
   if (!userExists) {
     throw new Error("User does not exist");
   }
