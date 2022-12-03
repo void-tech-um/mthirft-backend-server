@@ -22,6 +22,8 @@ export const getUser = async (user: User): Promise<User | null> => {
  * @returns {Promise<User>} Created user or error if user already exists
  * @throws {Error} If user does not exist
  */
+
+//Create User 
 export const createUser = async (user: any): Promise<User> => {
   // Check if user already exists
   const userExists = await getUser(user);
@@ -32,6 +34,18 @@ export const createUser = async (user: any): Promise<User> => {
   const newUser = await User.create(user);
   return newUser;
 };
+
+//Update user (called on user thats already loggin)
+export const updateUser = async (user: any): Promise<[affectedCount: number]> => {
+  // Update user
+  const updatedUser = await User.update(user, {
+    //'where' finds which user 
+    where: {
+      username: user.username
+    }
+  });
+  return updatedUser;
+}; 
 
 /**
  * @desc Get all items owned by user

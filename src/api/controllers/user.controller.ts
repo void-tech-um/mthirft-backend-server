@@ -5,7 +5,7 @@ export const createUserController = async (
   req: any,
   res: any
 ): Promise<void> => {
-  //create a new user
+  //Create a new user
   const user = {
     username: req.body.username,
     fullName: req.body.fullName,
@@ -14,12 +14,15 @@ export const createUserController = async (
     phoneNumber: req.body.phoneNumber,
   };
   console.log(user);
-  //Created a new user in the database
+
+  //Created a new user in database
   const createdUser = await db.user.createUser(user);
   console.log(createdUser);
+
   //Generate a token
   const token = generateAccessToken(user.username);
   console.log(token);
+
   //Returns user, email, and token
   res.send({
     username: createdUser.username,
@@ -27,3 +30,16 @@ export const createUserController = async (
     token: token,
   });
 };
+
+//Update user in database (Change username, password etc. except email)
+export const updateUserController = async (
+  req: any,
+  res: any
+): Promise<void> => {
+  //Update a user
+  const user = await db.user.updateUser(req.body.user);
+  res.send(user);
+};
+
+//Delete user? 
+
