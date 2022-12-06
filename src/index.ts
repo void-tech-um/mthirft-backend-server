@@ -13,9 +13,6 @@ const PORT = process.env.PORT;
 // Create Express server
 const app = express();
 
-// Sync database
-db.sequelize.sync({ force: true });
-
 // Enable CORS: Cross Origin Resource Sharing
 // This essentially allows us to make requests from our frontend to our backend
 app.use(cors());
@@ -27,7 +24,16 @@ app.use(express.json());
 // Tell our app to use the router we created
 app.use("/api", router);
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}. Visit http://localhost:${PORT}/api`);
-});
+// Sync the db and start the server
+db.sequelize
+  .sync()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(
+        `Listening on port ${PORT}. Visit http://localhost:${PORT}/api`
+      );
+    });
+  })
+  .catch((err) => {
+    console.log("failed to sync db: ", err);
+  });
