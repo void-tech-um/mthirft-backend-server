@@ -22,16 +22,14 @@ app.use(cors());
 app.use(express.json());
 
 // Tell our app to use the router we created
-app.use("/api", router);
+app.use("/", router);
 
 // Sync the db and start the server
 db.sequelize
   .sync()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(
-        `Listening on port ${PORT}. Visit http://localhost:${PORT}/api`
-      );
+      console.log(`Listening on port ${PORT}. Visit http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
