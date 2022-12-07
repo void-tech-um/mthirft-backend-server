@@ -51,6 +51,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'mthrift-server'
-          slot-name: 'Development'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7E07DB21908F4886BCA59BEA16C047C9 }}
           package: .
