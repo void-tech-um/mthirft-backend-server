@@ -1,7 +1,7 @@
 import express from "express";
-import authRouter from "./routes/auth.routes";
-import itemsRouter from "./routes/items.routes";
-import userRouter from "./routes/user.routes";
+import authRouter from "./auth";
+import itemsRouter from "./items";
+import userRouter from "./user";
 
 const router = express.Router();
 /** @route GET /api */

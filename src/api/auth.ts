@@ -1,9 +1,11 @@
-import db from "../../models";
-import { generateAccessToken } from "../utils";
-import dotenv from "dotenv";
+import express from "express";
+import db from "../models";
+import { hashPassword } from "./middleware";
+import { generateAccessToken } from "./utils";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
 
-dotenv.config();
+const authRouter = express.Router();
 
 /**
  * @route POST /api/auth/login
@@ -13,7 +15,7 @@ dotenv.config();
  * @param {any} res
  * @returns {Promise<void>}
  */
-export const authenticateUser = async (req: any, res: any): Promise<void> => {
+authRouter.post("/login", async (req: any, res: any): Promise<void> => {
   //get user username
   console.log(req.body);
   const user = await db.user.getUser(req.body.username);
@@ -38,7 +40,7 @@ export const authenticateUser = async (req: any, res: any): Promise<void> => {
     token: token,
     url: req.originalUrl,
   });
-};
+});
 
 /**
  * @route POST /api/auth/signup
@@ -48,24 +50,30 @@ export const authenticateUser = async (req: any, res: any): Promise<void> => {
  * @param {any} res
  * @returns {Promise<void>}
  */
+authRouter.post(
+  "/signup",
+  hashPassword,
+  async (req: any, res: any): Promise<void> => {
+    //Create a new user
+    const user = req.body;
+    console.log(user);
 
-export const createUser = async (req: any, res: any): Promise<void> => {
-  //Create a new user
-  const user = req.body;
-  console.log(user);
+    //Created a new user in database
+    const createdUser = await db.user.createUser(user);
+    console.log(createdUser);
 
-  //Created a new user in database
-  const createdUser = await db.user.createUser(user);
-  console.log(createdUser);
+    //Generate a token
+    const token = generateAccessToken(user.username);
+    console.log(token);
 
-  //Generate a token
-  const token = generateAccessToken(user.username);
-  console.log(token);
+    //Returns user, email, and token
+    res.send({
+      username: createdUser.username,
+      email: createdUser.email,
+      token: token,
+    });
+  }
+);
 
-  //Returns user, email, and token
-  res.send({
-    username: createdUser.username,
-    email: createdUser.email,
-    token: token,
-  });
-};
+// Export the authRouter
+export default authRouter;
