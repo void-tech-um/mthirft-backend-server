@@ -10,7 +10,7 @@ export const dbConn = (
   host: string
 ) => {
   const sequelize = new Sequelize(
-    `postgres://${user}:${password}@${host}:5432/${dbName}?sslmode=require`
+    `postgres://${user}:${password}@${host}:5432/${dbName}`
   );
 
   sequelize
