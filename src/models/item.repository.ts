@@ -14,6 +14,16 @@ export const getItem = async (itemId: number): Promise<Item | null> => {
   return item;
 };
 
+export const getUserItems = async (username: string): Promise<Item[]> => {
+  const items = await Item.findAll({
+    where: {
+      username,
+    },
+  });
+  return items;
+};
+  
+
 /**
  * @desc Get all items
  * @returns {Promise<Item[]>} All items
