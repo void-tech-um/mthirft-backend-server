@@ -1,4 +1,4 @@
-import { Item } from "./models";
+import { Item, Wishlist } from "./models";
 
 /**
  * @desc Check if item exists and return item
@@ -77,3 +77,40 @@ export const deleteItem = async (itemId: number): Promise<number> => {
   }
   return deletedItem;
 };
+
+/**
+ * @desc Get items from user wishlist
+ * @param {string} username
+ * @returns {Promise<Item[]>} Items from user wishlist
+ */
+export const getWishlistItems = async (username: string): Promise<Item[]> => {
+  // get all itemids where the username is equal to the passed in user
+  const itemids = await Wishlist.findAll({
+    attributes: ['itemid'], 
+    where: {
+      username: username,
+    },
+  });
+  const { Op } = require("sequelize");
+  const items = await Item.findAll( {
+    where: {
+      itemId: {
+        [Op.in]: itemids
+      }
+    }
+  }
+  )
+  return items;
+};
+
+// export const getUserItems = async (username: string): Promise<Item[]> => {
+//   const itemids = await Wishlist.findAll({
+//     attributes: ['itemid'], 
+//     where: {
+//       username: username,
+//     },
+//   });
+//   const items = await Item.findAll({
+//     where: {
+//        itemId in 
+//      }

@@ -7,9 +7,9 @@ const router = express.Router();
 /** @route GET /api */
 router.get("/", (req, res) => {
   res.send({
-    items: "/api/items",
-    auth: "/api/auth",
-    user: "/api/user",
+    items: "/items",
+    auth: "/auth",
+    user: "/user",
     url: req.originalUrl,
   });
 });

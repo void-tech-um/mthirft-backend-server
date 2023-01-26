@@ -16,11 +16,13 @@ itemRouter.get("/:id", async (req, res) => {
   res.send(response);
 });
 
+/**
+ * @route GET /items/
+ */
 itemRouter.get("/", async (req, res) => {
   const items = await db.item.getItems()
   res.send(items)
-})
-
+});
 
 /**
  * @route POST /items/
@@ -48,6 +50,12 @@ itemRouter.delete("/:id", async (req, res) => {
   const deletedItem = await db.item.deleteItem(parseInt(id));
   res.sendStatus(204);
 }); 
+
+// /** 
+//  * @route GET /items/wishlist/
+//  */
+// itemRouter.get("/wishlist/:id", async (req, res) => {
+
 
 
 export default itemRouter;

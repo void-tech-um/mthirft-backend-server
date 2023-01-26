@@ -49,6 +49,18 @@ export const updateUser = async (
   return updatedUser;
 };
 
+// Delete user
+export const deleteUser = async (user: any): Promise<number> => {
+  // Delete user
+  const deletedUser = await User.destroy({
+    where: {
+      username: user.username,
+    },
+  });
+  // this is a number from the sequelize destroy function
+  return deletedUser;
+};
+
 /**
  * @desc Get all items owned by user
  * @returns {Promise<Item[]>} All items owned by user
