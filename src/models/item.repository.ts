@@ -103,6 +103,19 @@ export const getWishlistItems = async (username: string): Promise<Item[]> => {
   return items;
 };
 
+
+
+/**
+ * @desc Post items to user wishlist
+ * @param {string} username
+ * @returns {Promise<Wishlist>} Items from user wishlist
+ */
+export const createWishlistItems = async (username: string, itemId: number): Promise<Wishlist> => {
+  const newWishlistItem = await Wishlist.create({username, itemId});
+  return newWishlistItem; 
+};
+
+
 // export const getUserItems = async (username: string): Promise<Item[]> => {
 //   const itemids = await Wishlist.findAll({
 //     attributes: ['itemid'], 

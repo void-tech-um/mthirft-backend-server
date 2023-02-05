@@ -51,11 +51,24 @@ itemRouter.delete("/:id", async (req, res) => {
   res.sendStatus(204);
 }); 
 
-// /** 
-//  * @route GET /items/wishlist/
-//  */
-// itemRouter.get("/wishlist/:id", async (req, res) => {
+/** 
+ * @route GET /items/wishlist/:username
+ */
+itemRouter.get("/wishlist/:username", async (req, res) => {
+  const wishlist_item_username = req.params.username;
+  const wishlistItems = await db.item.getWishlistItems(wishlist_item_username)
+  res.send(wishlistItems); 
+});
 
+/** 
+ * @route POST /items/wishlist/:username
+ */
+itemRouter.post("/wishlist/:username", async (req, res) => {
+  const wishlist_item_user = req.params.username;
+  const wishlist_item_id = req.body.id;
+  const createdWishlistItem = await db.item.createWishlistItems(wishlist_item_user, wishlist_item_id)
+  res.send(createdWishlistItem); 
+});
 
 
 export default itemRouter;
